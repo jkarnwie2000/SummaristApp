@@ -3,6 +3,9 @@
 
 ![Summarist Project](./summaristproject.png)
 
+Tech Stack
+React, TypeScript, Next.js, REST API
+
 ## Book Summary Platform
 
 🔗 **Live Demo:** [View Live Website](https://advanced-virtual-internship-purpleg.vercel.app/foryou)
