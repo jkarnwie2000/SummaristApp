@@ -3,8 +3,11 @@
 
 ![Summarist Project](./summaristproject.png)
 
-Tech Stack
-React, TypeScript, Next.js, REST API
+## 🛠️ Tech Stack
+* React — User interface development
+* TypeScript — Static type checking to JavaScript
+* Next.js — React framework for building web applications
+* REST API — Communication with web services through REST endpoints
 
 ## Book Summary Platform
 
