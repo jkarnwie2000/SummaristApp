@@ -1,7 +1,7 @@
 </> Markdown
 ## summarist App
 
-![Project Screenshot](imag 2.png)
+![Project Screenshot](.Desktop/screenshots/summaristproject)
 
 ## Book Summary Platform
 
