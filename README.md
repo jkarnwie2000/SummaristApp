@@ -9,6 +9,7 @@
 * JavaScript (ES6+) — Interactive functionality.
 * TypeScript — Static type checking to JavaScript.
 * Next.js — React framework for building web applications.
+* REST API — Communication with web services through REST endpoints
 
 ### 🚀 Key Features
 
