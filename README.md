@@ -38,7 +38,7 @@ State Management: Redux Toolkit and React Redux
 Icons: React Icons
 Code Quality: ESLint
 
-🔗 Prerequisites
+## Prerequisites
 
 Before installing the project, ensure you have the following tools installed.
 
