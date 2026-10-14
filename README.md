@@ -1,7 +1,7 @@
 </> Markdown
-## Summarist Project
+## Summarist Summary Platform Screenshot
 
-![Summarist Project](./summaristproject.png)
+![Summarist Summary Platform Screenshot](./summaristproject.png)
 
 ## 🛠️ Tech Stack
 
