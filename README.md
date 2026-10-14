@@ -5,11 +5,18 @@
 
 ## 🛠️ Tech Stack
 
-* React — User interface development
-* JavaScript (ES6+) — Interactive functionality
-* TypeScript — Static type checking to JavaScript
-* Next.js — React framework for building web applications
-* REST API — Communication with web services through REST endpoints
+* React — User interface development.
+* JavaScript (ES6+) — Interactive functionality.
+* TypeScript — Static type checking to JavaScript.
+* Next.js — React framework for building web applications.
+* REST API — Communication with web services through REST endpoints.
+
+### 🚀 Key Features
+
+*  📚 Discover Popular Books: Explore a curated collection of trending books across multiple genres to find your next favorite read.
+*  ⚡ Concise Book Summaries: Access easy-to-read summaries that highlight key ideas, main concepts, and valuable insights in less time.
+*  🎯 Personalized Recommendations: Discover books tailored to your interests through an intuitive, user-friendly interface designed to make finding your next read effortless.
+
 
 ## Book Summary Platform
 
