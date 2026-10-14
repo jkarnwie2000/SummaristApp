@@ -1,7 +1,7 @@
 </> Markdown
-## Summarist Book Summary Platform Screenshot
+## Summarist Book Summary Screenshot
 
-![Summarist Book Summary Platform Screenshot](./summaristproject.png)
+![Summarist Book Summary Screenshot](./summaristproject.png)
 
 ## 🛠️ Tech Stack
 
@@ -24,7 +24,7 @@
 
 A React platform that helps readers discover popular books
 
-## Summarist Book Summary Platform
+## Summarist Book Summary Run Instructions
 
 A web application built with Next.js, React, and TypeScript. The project uses the Next.js App Router, Firebase Authentication with Google sign-in, Redux Toolkit for state management, and Tailwind CSS for styling.
 
