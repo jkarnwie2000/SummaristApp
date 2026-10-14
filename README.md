@@ -1,7 +1,7 @@
 </> Markdown
-## Summarist Summary Platform Screenshot
+## Summarist Book Summary Platform Screenshot
 
-![Summarist Summary Platform Screenshot](./summaristproject.png)
+![Summarist Book Summary Platform Screenshot](./summaristproject.png)
 
 ## 🛠️ Tech Stack
 
@@ -18,13 +18,13 @@
 *  🎯 Personalized Recommendations: Discover books tailored to your interests through an intuitive, user-friendly interface designed to make finding your next read effortless.
 
 
-## Book Summary Platform
+## Summarist Book Summary Platform
 
 🔗 **Live Demo:** [View Live Website](https://advanced-virtual-internship-purpleg.vercel.app/foryou)
 
 A React platform that helps readers discover popular books
 
-## Book Summary Platform
+## Summarist Book Summary Platform
 
 A web application built with Next.js, React, and TypeScript. The project uses the Next.js App Router, Firebase Authentication with Google sign-in, Redux Toolkit for state management, and Tailwind CSS for styling.
 
