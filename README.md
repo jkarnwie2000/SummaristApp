@@ -24,7 +24,7 @@
 
 A React platform that helps readers discover popular books
 
-## Skinstric A.I. Website
+## Book Summary Platform
 
 A web application built with Next.js, React, and TypeScript. The project uses the Next.js App Router, Firebase Authentication with Google sign-in, Redux Toolkit for state management, and Tailwind CSS for styling.
 
