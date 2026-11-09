@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatPrice } from "@/lib/catalog";
-import { fulfillPaymentIntent } from "@/lib/orders";
+import { describePaymentIntent, fulfillPaymentIntent } from "@/lib/orders";
+import type { Order } from "@/lib/types";
 import { getStripe } from "@/lib/stripe";
 import ClearCart from "./ClearCart";
 
@@ -13,14 +14,20 @@ export default async function PaymentSuccessPage({ searchParams }: Props) {
   const { payment_intent: id } = await searchParams;
 
   let status: string | null = null;
-  let order: Awaited<ReturnType<typeof fulfillPaymentIntent>> = null;
+  let order: Order | null = null;
 
   if (id?.startsWith("pi_")) {
     try {
       const pi = await getStripe().paymentIntents.retrieve(id);
       status = pi.status;
-      // Records the order here too, in case the webhook isn't set up (e.g. local dev).
-      order = await fulfillPaymentIntent(pi);
+      if (pi.status === "succeeded" && pi.metadata.source === "summarist") {
+        // Whether the customer paid is decided by Stripe, not by our database:
+        // show the receipt even if saving the order fails (the webhook retries).
+        order = await fulfillPaymentIntent(pi).catch(async (error) => {
+          console.error("Payment succeeded but the order could not be saved", error);
+          return describePaymentIntent(pi);
+        });
+      }
     } catch (error) {
       console.error("Could not load payment", error);
     }

@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getAllBooks } from "@/lib/books";
-import { formatPrice, LOW_STOCK_THRESHOLD } from "@/lib/catalog";
+import { DEFAULT_STOCK, formatPrice, LOW_STOCK_THRESHOLD } from "@/lib/catalog";
+import type { Order } from "@/lib/types";
 import { getStore } from "@/lib/store";
 import { logout } from "./actions";
 import DeleteTransaction from "./DeleteTransaction";
@@ -19,9 +20,8 @@ const DAYS = 14;
 export default async function AdminDashboard() {
   await requireAdmin();
 
-  const store = getStore();
-  const [orders, books] = await Promise.all([store.listOrders(), getAllBooks()]);
-  const inventory = await store.getInventory(books.map((b) => b.id));
+  const books = await getAllBooks();
+  const { orders, inventory, storeError } = await loadStoreData(books.map((b) => b.id));
 
   // --- Sales stats ---------------------------------------------------------
   const revenue = orders.reduce((sum, o) => sum + o.total, 0);
@@ -92,6 +92,16 @@ export default async function AdminDashboard() {
           </form>
         </div>
       </header>
+
+      {storeError && (
+        <div className="shop-alert shop-alert--error" role="alert">
+          <strong>Order storage is unavailable</strong>, so sales and stock below are
+          not live and changes can&apos;t be saved. If you use Firestore, check that a
+          Firestore database exists for your Firebase project.
+          <br />
+          <span className="admin-mono">{storeError}</span>
+        </div>
+      )}
 
       <section className="admin-stats" aria-label="Key figures">
         <Stat label="Total revenue" value={formatPrice(revenue)} />
@@ -228,6 +238,29 @@ export default async function AdminDashboard() {
       </section>
     </main>
   );
+}
+
+/** Reads orders + stock; if the store is down, returns empty data and the error. */
+async function loadStoreData(bookIds: string[]): Promise<{
+  orders: Order[];
+  inventory: Record<string, number>;
+  storeError: string | null;
+}> {
+  const store = getStore();
+  try {
+    const [orders, inventory] = await Promise.all([
+      store.listOrders(),
+      store.getInventory(bookIds),
+    ]);
+    return { orders, inventory, storeError: null };
+  } catch (error) {
+    console.error("Order store unavailable", error);
+    return {
+      orders: [],
+      inventory: Object.fromEntries(bookIds.map((id) => [id, DEFAULT_STOCK])),
+      storeError: String((error as Error).message ?? error).split("\n")[0],
+    };
+  }
 }
 
 function Stat({

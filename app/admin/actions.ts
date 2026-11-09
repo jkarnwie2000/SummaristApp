@@ -35,7 +35,13 @@ export async function deleteTransaction(
   const restock = formData.get("restock") === "on";
   if (!id) return { error: "Missing transaction id." };
 
-  const deleted = await getStore().deleteOrder(id, restock);
+  let deleted: boolean;
+  try {
+    deleted = await getStore().deleteOrder(id, restock);
+  } catch (error) {
+    console.error("Delete failed", error);
+    return { error: "Couldn't reach order storage. Try again later." };
+  }
   if (!deleted) return { error: "That transaction no longer exists." };
 
   revalidatePath("/admin");
@@ -55,7 +61,12 @@ export async function updateStock(
     return { error: "Stock must be a whole number of 0 or more." };
   }
 
-  await getStore().setStock(bookId, stock);
+  try {
+    await getStore().setStock(bookId, stock);
+  } catch (error) {
+    console.error("Stock update failed", error);
+    return { error: "Couldn't save — order storage is unavailable." };
+  }
   revalidatePath("/admin");
   revalidatePath("/book/[id]", "page");
   return { ok: "Saved" };

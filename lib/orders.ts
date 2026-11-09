@@ -22,3 +22,10 @@ export async function fulfillPaymentIntent(
   await getStore().recordOrder(order);
   return order;
 }
+
+/** Order details for a PaymentIntent, without saving anything (for display). */
+export async function describePaymentIntent(pi: Stripe.PaymentIntent): Promise<Order> {
+  const books = await getAllBooks().catch(() => []);
+  const titles = Object.fromEntries(books.map((b) => [b.id, b.title]));
+  return orderFromPaymentIntent(pi, titles);
+}

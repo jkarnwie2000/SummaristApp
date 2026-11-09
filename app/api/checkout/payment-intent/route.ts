@@ -65,7 +65,13 @@ export async function POST(request: Request) {
     quantities.set(bookId, (quantities.get(bookId) ?? 0) + quantity);
   }
 
-  const inventory = await getStore().getInventory([...quantities.keys()]);
+  // If the order store is unreachable, still take payments (stock isn't checked).
+  const inventory: Record<string, number> = await getStore()
+    .getInventory([...quantities.keys()])
+    .catch((error) => {
+      console.error("Inventory unavailable; skipping stock check", error);
+      return Object.fromEntries([...quantities.keys()].map((id) => [id, Infinity]));
+    });
   const items: OrderItem[] = [];
   for (const [bookId, quantity] of quantities) {
     const book = books.get(bookId)!;
