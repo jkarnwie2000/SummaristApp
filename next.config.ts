@@ -5,8 +5,14 @@ const nextConfig: NextConfig = {
   images: {
     // Book covers come from the Summarist Firebase Storage bucket; next/image
     // resizes them and serves WebP/AVIF instead of full-size PNGs.
+    // Object form (not `new URL(...)`): a URL object pins the query string to
+    // empty, and every cover URL carries `?alt=media&token=...`.
     remotePatterns: [
-      new URL("https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/**"),
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        pathname: "/v0/b/summaristt.appspot.com/o/**",
+      },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
