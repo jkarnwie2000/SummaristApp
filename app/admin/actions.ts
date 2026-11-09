@@ -3,22 +3,34 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
-  checkPassword,
   endAdminSession,
+  isApprovedAdmin,
   requireAdmin,
   startAdminSession,
+  verifyFirebaseIdToken,
 } from "@/lib/admin-auth";
 import { getStore } from "@/lib/store";
 
 export type ActionState = { error?: string; ok?: string } | null;
 
-export async function login(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const password = String(formData.get("password") ?? "");
-  if (!checkPassword(password)) {
-    return { error: "Incorrect password." };
+/**
+ * Called by the login form after Firebase has checked the email + password.
+ * Starts the admin session, or returns an error code the form turns into a message.
+ */
+export async function adminLogin(
+  idToken: string,
+): Promise<{ ok: true } | { error: "invalid" | "unverified" | "not-approved" }> {
+  let who: { email: string | null; emailVerified: boolean };
+  try {
+    who = await verifyFirebaseIdToken(idToken);
+  } catch (error) {
+    console.error("Admin token check failed", error);
+    return { error: "invalid" };
   }
-  await startAdminSession();
-  redirect("/admin");
+  if (!who.email || !isApprovedAdmin(who.email)) return { error: "not-approved" };
+  if (!who.emailVerified) return { error: "unverified" };
+  await startAdminSession(who.email);
+  return { ok: true };
 }
 
 export async function logout() {

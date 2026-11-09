@@ -12,7 +12,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { formatPrice } from "@/lib/catalog";
-import { setPaymentIntentId } from "@/lib/cart/cartSlice";
+import { setCustomer, setPaymentIntentId } from "@/lib/cart/cartSlice";
 import { selectCartItems, useAppDispatch, useAppSelector } from "@/lib/cart/store";
 import type { Customer, OrderItem } from "@/lib/types";
 import OrderSummary from "../checkout/OrderSummary";
@@ -135,7 +135,11 @@ export default function PaymentPage() {
                     },
                   }}
                 >
-                  <PaymentForm total={intent.total} customer={customer!} />
+                  <PaymentForm
+                    total={intent.total}
+                    customer={customer!}
+                    clientSecret={intent.clientSecret}
+                  />
                 </Elements>
               )}
               {isTestMode && (
@@ -155,9 +159,20 @@ export default function PaymentPage() {
   );
 }
 
-function PaymentForm({ total, customer }: { total: number; customer: Customer }) {
+function PaymentForm({
+  total,
+  customer,
+  clientSecret,
+}: {
+  total: number;
+  customer: Customer;
+  clientSecret: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
+  const dispatch = useAppDispatch();
+  const [email, setEmail] = useState(customer.email);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   // Bumping the key re-mounts the address fields, resetting them to the shipping address.
@@ -166,8 +181,14 @@ function PaymentForm({ total, customer }: { total: number; customer: Customer })
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
-    setSubmitting(true);
     setMessage(null);
+    setEmailError(null);
+    const receiptEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(receiptEmail)) {
+      setEmailError("Enter a valid email address.");
+      return;
+    }
+    setSubmitting(true);
 
     // Validates the card and billing address fields and shows inline errors.
     const { error: submitError } = await elements.submit();
@@ -184,6 +205,22 @@ function PaymentForm({ total, customer }: { total: number; customer: Customer })
     }
     const { name, address } = billing.value;
 
+    // Save a changed email on the payment so the receipt goes to the right place.
+    if (receiptEmail !== customer.email) {
+      const res = await fetch("/api/checkout/payment-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientSecret, email: receiptEmail }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setEmailError(data.error ?? "Couldn't update your email. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+      dispatch(setCustomer({ ...customer, email: receiptEmail }));
+    }
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -191,7 +228,7 @@ function PaymentForm({ total, customer }: { total: number; customer: Customer })
         payment_method_data: {
           billing_details: {
             name,
-            email: customer.email,
+            email: receiptEmail,
             address: {
               line1: address.line1,
               line2: address.line2 ?? "",
@@ -257,6 +294,30 @@ function PaymentForm({ total, customer }: { total: number; customer: Customer })
           }}
         />
       </section>
+
+      <div className="shop-email">
+        <label className="shop-field">
+          <span className="shop-field__label">Email address</span>
+          <span className="shop-muted">
+            We&apos;ll send your receipt and order updates here.
+          </span>
+          <input
+            className={`shop-input ${emailError ? "shop-input--error" : ""}`}
+            type="email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={Boolean(emailError)}
+            required
+          />
+          {emailError && (
+            <span className="shop-field__error" role="alert">
+              {emailError}
+            </span>
+          )}
+        </label>
+      </div>
 
       {message && (
         <p className="shop-alert shop-alert--error" role="alert">

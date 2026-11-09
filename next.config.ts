@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
   // A package-lock.json in the home folder confuses root detection.
   turbopack: { root: path.resolve(__dirname) },
   // firebase-admin is only used on the server; keep it out of the bundler.
-  serverExternalPackages: ["firebase-admin"],
+  serverExternalPackages: ["firebase-admin", "nodemailer"],
 };
 
 export default nextConfig;

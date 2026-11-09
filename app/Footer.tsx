@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Footer() {
   return (
 <section id="footer">
@@ -71,6 +73,11 @@ export default function Footer() {
                     </div>
                     <div className="footer__link--wrapper">
                       <a className="footer__link">Privacy Policies</a>
+                    </div>
+                    <div className="footer__link--wrapper">
+                      <Link className="footer__link" href="/admin/login">
+                        Admin Login
+                      </Link>
                     </div>
                   </div>
                 </div>

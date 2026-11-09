@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 const DAYS = 14;
 
 export default async function AdminDashboard() {
-  await requireAdmin();
+  const adminEmail = await requireAdmin();
 
   const books = await getAllBooks();
   const { orders, inventory, storeError } = await loadStoreData(books.map((b) => b.id));
@@ -84,6 +84,7 @@ export default async function AdminDashboard() {
           <p className="shop-muted">Summarist store dashboard</p>
         </div>
         <div className="admin__header-actions">
+          <span className="admin__who">Signed in as {adminEmail}</span>
           <Link href="/foryou" className="shop-link">
             View store
           </Link>

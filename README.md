@@ -18,7 +18,8 @@
 *  🎯 Personalized Recommendations: Discover books tailored to your interests through an intuitive, user-friendly interface designed to make finding your next read effortless.
 *  ⭐ Prices & Star Ratings: Every book shows its price and a five-star rating with the number of reviews.
 *  🛒 Cart, Checkout & Stripe Payments: Add books to a cart, enter shipping details, and pay securely with the Stripe Payment Element. Prices and stock are re-checked on the server.
-*  📊 Admin Dashboard: Track revenue, orders and copies sold, see daily revenue, manage inventory (with low-stock alerts), and delete transactions.
+*  📧 Purchase Emails: Buyers get a receipt and the business gets an order notification for every purchase.
+*  📊 Admin Dashboard: Sign in with a verified, approved admin account to track revenue, orders and copies sold, see daily revenue, manage inventory (with low-stock alerts), and delete transactions.
 
 
 ## Summarist Book Summary Platform
@@ -137,7 +138,10 @@ Copy `.env.example` to `.env.local` and fill in:
 | --- | --- |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` / `STRIPE_SECRET_KEY` | Stripe API keys (use test keys, from https://dashboard.stripe.com/test/apikeys) |
 | `STRIPE_WEBHOOK_SECRET` | Signing secret for `/api/webhooks/stripe` (event: `payment_intent.succeeded`) |
-| `ADMIN_PASSWORD` | Password for the admin dashboard at `/admin` |
+| `ADMIN_EMAILS` | Comma-separated emails allowed into the admin dashboard. Admins create an account at `/admin/signup` (or sign in at `/admin/login`, linked in the footer) and must verify their email |
+| `ADMIN_SESSION_SECRET` | Long random string used to sign the admin session cookie |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM` | SMTP account that sends purchase emails (e.g. Gmail with an App Password) |
+| `BUSINESS_EMAILS` | Comma-separated addresses that get a notification for every order (the buyer gets a receipt too) |
 | `FIREBASE_SERVICE_ACCOUNT_KEY` | Optional locally, **required on Vercel**: a Firebase service account JSON (one line). Orders and inventory are saved to Firestore. Without it they are saved to `.data/store.json`, which only works on your own machine. |
 
 To receive webhooks locally, install the Stripe CLI and run:

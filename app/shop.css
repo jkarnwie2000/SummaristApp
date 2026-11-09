@@ -1027,3 +1027,72 @@ button.sidebar__link--wrapper {
     width: 100%;
   }
 }
+
+/* --- Admin sign-in / create account / forgot password ------------------- */
+.admin-login__card {
+  max-width: 420px;
+}
+.admin-login__logo {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.admin-login__logo img {
+  height: auto;
+}
+.admin-login__card .admin-title {
+  margin-bottom: 6px;
+}
+.admin-login__subtitle {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.admin-login__label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.admin-login__small {
+  font-size: 13px;
+}
+.admin-login__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--shop-good-bg);
+  color: var(--shop-navy);
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.admin-login__footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--shop-border);
+  font-size: 14px;
+  color: var(--shop-muted);
+  text-align: center;
+}
+.admin-login__sep {
+  margin: 0 8px;
+}
+button.shop-link {
+  font-size: inherit;
+  padding: 0;
+}
+.admin__who {
+  font-size: 14px;
+  color: var(--shop-muted);
+}
+
+/* --- Receipt email field on the payment page ---------------------------- */
+.shop-email {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--shop-border);
+}
+.shop-email .shop-field__label {
+  font-size: 16px;
+  font-weight: 700;
+}
