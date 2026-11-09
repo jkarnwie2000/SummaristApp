@@ -18,21 +18,21 @@
 
 ### 🚀 Key Features
 
-📚 Book discovery: browse selected, recommended and suggested books
-🔍 Live search: find books by title or author
-🎧 Read or listen: text summaries and an audio player
-⭐ Ratings and prices: star ratings and a price on every book
-🛒 Shopping cart: saved cart, quantity controls, continue-shopping option
-💳 Stripe checkout: secure card payment with billing address
-📧 Purchase emails: branded receipts to buyers, alerts to the business
-🔐 Firebase sign-in: customer accounts with login and sign-up
-🛡️ Admin portal: login for approved, email-verified admins only
-📊 Sales dashboard: revenue totals, daily sales chart, transaction history
-📦 Inventory management: stock editing and low-stock alerts
-🗑️ Transaction control: delete orders and optionally restock items
-⚡ Performance: server rendering, caching, optimized images, loading skeletons
-📱 Responsive design: works on phones, tablets and desktops
-🚀 Continuous deployment: Vercel redeploys automatically on every GitHub push
+* 📚 Book discovery: browse selected, recommended and suggested books
+* 🔍 Live search: find books by title or author
+* 🎧 Read or listen: text summaries and an audio player
+* ⭐ Ratings and prices: star ratings and a price on every book
+* 🛒 Shopping cart: saved cart, quantity controls, continue-shopping option
+* 💳 Stripe checkout: secure card payment with billing address
+* 📧 Purchase emails: branded receipts to buyers, alerts to the business
+* 🔐 Firebase sign-in: customer accounts with login and sign-up
+* 🛡️ Admin portal: login for approved, email-verified admins only
+* 📊 Sales dashboard: revenue totals, daily sales chart, transaction history
+* 📦 Inventory management: stock editing and low-stock alerts
+* 🗑️ Transaction control: delete orders and optionally restock items
+* ⚡ Performance: server rendering, caching, optimized images, loading skeletons
+* 📱 Responsive design: works on phones, tablets and desktops
+* 🚀 Continuous deployment: Vercel redeploys automatically on every GitHub push
 
 ## Summarist Book Summary Platform
 
