@@ -129,7 +129,7 @@ export default function Homesections() {
                     </div>
                   </div>
                   <div className="review__body">
-                    This app has been a <b>game-changer</b> for me! It's saved
+                    This app has been a <b>game-changer</b> for me! It&apos;s saved
                     me so much time and effort in reading and comprehending
                     books. Highly recommend it to all book lovers.
                   </div>
@@ -148,7 +148,7 @@ export default function Homesections() {
                   <div className="review__body">
                     I love this app! It provides
                     <b>concise and accurate summaries</b> of books in a way that
-                    is easy to understand. It's also very user-friendly and
+                    is easy to understand. It&apos;s also very user-friendly and
                     intuitive.
                   </div>
                 </div>

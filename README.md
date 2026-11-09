@@ -16,6 +16,9 @@
 *  📚 Discover Popular Books: Explore a curated collection of trending books across multiple genres to find your next favorite read.
 *  ⚡ Concise Book Summaries: Access easy-to-read summaries that highlight key ideas, main concepts, and valuable insights in less time.
 *  🎯 Personalized Recommendations: Discover books tailored to your interests through an intuitive, user-friendly interface designed to make finding your next read effortless.
+*  ⭐ Prices & Star Ratings: Every book shows its price and a five-star rating with the number of reviews.
+*  🛒 Cart, Checkout & Stripe Payments: Add books to a cart, enter shipping details, and pay securely with the Stripe Payment Element. Prices and stock are re-checked on the server.
+*  📊 Admin Dashboard: Track revenue, orders and copies sold, see daily revenue, manage inventory (with low-stock alerts), and delete transactions.
 
 
 ## Summarist Book Summary Platform
@@ -126,7 +129,24 @@ Important: The Firebase configuration currently contains hardcoded values. If yo
 
 Firebase web configuration values are not equivalent to private server credentials. However, you should protect your project with appropriate Firebase Authentication, authorized-domain, and security-rule settings.
 
-Step 4: Start the Development Server
+Step 4: Configure Stripe and the Admin Dashboard
+
+Copy `.env.example` to `.env.local` and fill in:
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` / `STRIPE_SECRET_KEY` | Stripe API keys (use test keys, from https://dashboard.stripe.com/test/apikeys) |
+| `STRIPE_WEBHOOK_SECRET` | Signing secret for `/api/webhooks/stripe` (event: `payment_intent.succeeded`) |
+| `ADMIN_PASSWORD` | Password for the admin dashboard at `/admin` |
+| `FIREBASE_SERVICE_ACCOUNT_KEY` | Optional locally, **required on Vercel**: a Firebase service account JSON (one line). Orders and inventory are saved to Firestore. Without it they are saved to `.data/store.json`, which only works on your own machine. |
+
+To receive webhooks locally, install the Stripe CLI and run:
+
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+
+Orders are also recorded when the buyer reaches the confirmation page, so test payments still show up in the dashboard without the webhook. Test card: 4242 4242 4242 4242, any future date, any CVC.
+
+Step 5: Start the Development Server
 
 Run:
 
