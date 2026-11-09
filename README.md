@@ -4,12 +4,17 @@
 ![Summarist Book Summary Screenshot](./summaristproject.png)
 
 ## 🛠️ Tech Stack
-
-* React — User interface development.
-* JavaScript (ES6+) — Interactive functionality.
-* TypeScript — Static type checking to JavaScript.
-* Next.js — React framework for building web applications.
-* REST API — Communication with web services through REST endpoints
+* Next.js 16: App Router, server components
+* React 19: UI components and hooks
+* TypeScript: type-safe frontend and backend code
+* Redux Toolkit: shopping cart state management
+* Stripe: secure card payments and billing
+* Firebase Authentication: customer and admin sign-in
+* Cloud Firestore: orders and inventory database
+* Firebase Admin SDK: server-side token verification
+* Nodemailer: automated purchase email notifications
+* CSS: custom responsive styling
+* Vercel: hosting with automatic GitHub deploys
 
 ### 🚀 Key Features
 
