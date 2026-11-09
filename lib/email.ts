@@ -92,16 +92,40 @@ function itemsText(order: Order) {
   ].join("\n");
 }
 
+/** Company name shown in the email banner, subjects and footer. */
+const COMPANY = process.env.COMPANY_NAME || "Summarist";
+/** Store link in the banner (Vercel provides the production domain at runtime). */
+const SITE_URL =
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://summarist-app-purple-gold.vercel.app");
+
+/** Table-based layout so the banner renders the same in Gmail, Outlook and Apple Mail. */
 function layout(title: string, body: string) {
-  return `<!doctype html><html><body style="margin:0;background:#f7faf9;font-family:Roboto,Arial,sans-serif;color:#032b41">
-  <div style="max-width:560px;margin:0 auto;padding:24px 16px">
-    <div style="font-size:22px;font-weight:700;margin-bottom:16px">Summarist</div>
-    <div style="background:#fff;border:1px solid #e1e7ea;border-radius:8px;padding:24px">
-      <h1 style="font-size:20px;margin:0 0 12px">${title}</h1>
-      ${body}
-    </div>
-    <p style="font-size:12px;color:#6b757b;margin-top:16px">This email was sent because a purchase was made on Summarist.</p>
-  </div></body></html>`;
+  const company = esc(COMPANY);
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#f7faf9;font-family:Roboto,Arial,sans-serif;color:#032b41">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f7faf9">
+    <tr><td align="center" style="padding:24px 12px">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px">
+        <tr><td style="background:#032b41;border-radius:8px 8px 0 0;padding:22px 24px;border-bottom:4px solid #2bd97c">
+          <a href="${SITE_URL}" style="text-decoration:none">
+            <span style="display:block;font-size:28px;line-height:32px;font-weight:700;color:#ffffff;letter-spacing:0.3px">${company}</span>
+            <span style="display:block;font-size:13px;line-height:18px;color:#2bd97c;margin-top:4px">Book summaries &amp; bookstore</span>
+          </a>
+        </td></tr>
+        <tr><td style="background:#ffffff;border:1px solid #e1e7ea;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+          <h1 style="font-size:20px;margin:0 0 12px;color:#032b41">${title}</h1>
+          ${body}
+        </td></tr>
+        <tr><td style="padding:16px 4px;font-size:12px;line-height:18px;color:#6b757b">
+          This email was sent because a purchase was made at
+          <a href="${SITE_URL}" style="color:#16a05d">${company}</a>.<br>
+          &copy; ${new Date().getFullYear()} ${company}. All rights reserved.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table></body></html>`;
 }
 
 const block = (heading: string, lines: string[]) =>
@@ -133,7 +157,7 @@ export async function sendOrderEmails(
         from,
         to: order.customerEmail,
         replyTo: businessEmails()[0],
-        subject: `Your Summarist order is confirmed (#${ref})`,
+        subject: `Your ${COMPANY} order is confirmed (#${ref})`,
         text: [
           `Hi ${firstName},`,
           "",
@@ -164,9 +188,9 @@ export async function sendOrderEmails(
         from,
         to: business,
         replyTo: order.customerEmail || undefined,
-        subject: `New order: ${formatPrice(order.total, order.currency)} from ${order.customerName || order.customerEmail} (#${ref})`,
+        subject: `${COMPANY} – new order: ${formatPrice(order.total, order.currency)} from ${order.customerName || order.customerEmail} (#${ref})`,
         text: [
-          "A new purchase was made on Summarist.",
+          `A new purchase was made on ${COMPANY}.`,
           "",
           `Customer: ${order.customerName} <${order.customerEmail}>`,
           "",
