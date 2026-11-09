@@ -1096,3 +1096,30 @@ button.shop-link {
   font-size: 16px;
   font-weight: 700;
 }
+
+/* --- Admin header logo --------------------------------------------------- */
+.admin__brand {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.admin__logo {
+  display: inline-flex;
+  padding-right: 24px;
+  border-right: 1px solid var(--shop-border);
+}
+.admin__logo img {
+  height: auto;
+}
+@media (max-width: 576px) {
+  .admin__logo {
+    border-right: none;
+    padding-right: 0;
+  }
+}
+
+/* Home-page navbar logo is now a link */
+a.nav__img--mask {
+  display: block;
+}

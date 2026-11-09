@@ -170,7 +170,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           aria-label="Main"
         >
           <div className="sidebar__logo">
-            <Link href="/foryou">
+            <Link href="/" aria-label="Summarist home page">
               <Image src="/logo.png" alt="Summarist" width={160} height={40} preload />
             </Link>
           </div>

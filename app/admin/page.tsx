@@ -79,9 +79,14 @@ export default async function AdminDashboard() {
   return (
     <main className="admin">
       <header className="admin__header">
-        <div>
-          <h1 className="admin-title">Sales &amp; inventory</h1>
-          <p className="shop-muted">Summarist store dashboard</p>
+        <div className="admin__brand">
+          <Link href="/" className="admin__logo" aria-label="Summarist home page">
+            <Image src="/logo.png" alt="Summarist" width={160} height={40} preload />
+          </Link>
+          <div>
+            <h1 className="admin-title">Sales &amp; inventory</h1>
+            <p className="shop-muted">Summarist store dashboard</p>
+          </div>
         </div>
         <div className="admin__header-actions">
           <span className="admin__who">Signed in as {adminEmail}</span>
