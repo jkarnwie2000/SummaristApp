@@ -4,16 +4,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  AddressElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { formatPrice } from "@/lib/catalog";
 import { setPaymentIntentId } from "@/lib/cart/cartSlice";
 import { selectCartItems, useAppDispatch, useAppSelector } from "@/lib/cart/store";
-import type { OrderItem } from "@/lib/types";
+import type { Customer, OrderItem } from "@/lib/types";
 import OrderSummary from "../checkout/OrderSummary";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
 // Created once at module level so Stripe.js is only loaded a single time.
-const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
+// The developer assistant is the floating Stripe button Stripe.js shows on
+// test-mode pages; it isn't meant for customers.
+const stripePromise = publishableKey
+  ? loadStripe(publishableKey, { developerTools: { assistant: { enabled: false } } })
+  : null;
 const isTestMode = publishableKey.startsWith("pk_test");
 
 type Intent = { clientSecret: string; items: OrderItem[]; total: number };
@@ -125,7 +135,7 @@ export default function PaymentPage() {
                     },
                   }}
                 >
-                  <PaymentForm total={intent.total} />
+                  <PaymentForm total={intent.total} customer={customer!} />
                 </Elements>
               )}
               {isTestMode && (
@@ -145,11 +155,13 @@ export default function PaymentPage() {
   );
 }
 
-function PaymentForm({ total }: { total: number }) {
+function PaymentForm({ total, customer }: { total: number; customer: Customer }) {
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  // Bumping the key re-mounts the address fields, resetting them to the shipping address.
+  const [billingKey, setBillingKey] = useState(0);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,9 +169,40 @@ function PaymentForm({ total }: { total: number }) {
     setSubmitting(true);
     setMessage(null);
 
+    // Validates the card and billing address fields and shows inline errors.
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setSubmitting(false);
+      return;
+    }
+
+    const billing = await elements.getElement(AddressElement)?.getValue();
+    if (!billing?.complete) {
+      setMessage("Please complete your billing address.");
+      setSubmitting(false);
+      return;
+    }
+    const { name, address } = billing.value;
+
     const { error } = await stripe.confirmPayment({
       elements,
-      confirmParams: { return_url: `${window.location.origin}/payment/success` },
+      confirmParams: {
+        return_url: `${window.location.origin}/payment/success`,
+        payment_method_data: {
+          billing_details: {
+            name,
+            email: customer.email,
+            address: {
+              line1: address.line1,
+              line2: address.line2 ?? "",
+              city: address.city,
+              state: address.state ?? "",
+              postal_code: address.postal_code,
+              country: address.country,
+            },
+          },
+        },
+      },
     });
 
     // Only reached if confirmation failed; on success Stripe redirects.
@@ -173,7 +216,48 @@ function PaymentForm({ total }: { total: number }) {
 
   return (
     <form onSubmit={submit}>
-      <PaymentElement options={{ layout: "tabs" }} />
+      <PaymentElement
+        options={{
+          layout: "tabs",
+          // The billing address comes from the section below instead.
+          fields: { billingDetails: { address: "never" } },
+        }}
+      />
+
+      <section className="shop-billing" aria-labelledby="billing-title">
+        <h3 id="billing-title" className="shop-billing__title">
+          Billing address
+        </h3>
+        <p className="shop-muted shop-billing__hint">
+          Filled in from your shipping address. Change it if your card is billed
+          somewhere else.
+        </p>
+        <button
+          type="button"
+          className="shop-link shop-billing__reset"
+          onClick={() => setBillingKey((k) => k + 1)}
+        >
+          Reset to shipping address
+        </button>
+        <AddressElement
+          key={billingKey}
+          options={{
+            mode: "billing",
+            defaultValues: {
+              name: customer.name,
+              address: {
+                line1: customer.address,
+                line2: "",
+                city: customer.city,
+                state: customer.state,
+                postal_code: customer.postalCode,
+                country: customer.country,
+              },
+            },
+          }}
+        />
+      </section>
+
       {message && (
         <p className="shop-alert shop-alert--error" role="alert">
           {message}
