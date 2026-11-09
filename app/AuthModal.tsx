@@ -13,18 +13,21 @@ export default function AuthModal({ onClose, redirectTo }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div className="auth-container">
-      <button onClick={onClose} className="btn-close">X</button>
+    <div
+      className="auth-container"
+      role="dialog"
+      aria-modal="true"
+      aria-label={isLogin ? "Log in to Summarist" : "Create a Summarist account"}
+    >
+      <button onClick={onClose} className="btn-close" aria-label="Close">
+        &times;
+      </button>
 
       {isLogin ? (
-        <LoginForm redirectTo={redirectTo} />
+        <LoginForm redirectTo={redirectTo} onSwitchToSignUp={() => setIsLogin(false)} />
       ) : (
-        <RegisterForm />
+        <RegisterForm redirectTo={redirectTo} onSwitchToLogin={() => setIsLogin(true)} />
       )}
-
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? "Sign Up" : "Sign In"}
-      </button>
     </div>
   );
 }

@@ -1,85 +1,96 @@
-"use client"; // Required for handling state like password matching
+"use client";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
-export default function SignUpForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+type RegisterFormProps = {
+  redirectTo?: string;
+  /** Goes back to the login form inside the same modal. */
+  onSwitchToLogin?: () => void;
+};
+
+const MESSAGES: Record<string, string> = {
+  "auth/email-already-in-use": "An account with this email already exists. Try logging in.",
+  "auth/invalid-email": "Enter a valid email address.",
+  "auth/weak-password": "Choose a stronger password (at least 6 characters).",
+  "auth/network-request-failed": "Network error. Check your connection and try again.",
+};
+
+export default function RegisterForm({ redirectTo = "/foryou", onSwitchToLogin }: RegisterFormProps) {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    if (!email.trim()) return setError("Enter your email address.");
+    if (password.length < 6) return setError("Use at least 6 characters for your password.");
+    if (password !== confirmPassword) return setError("The passwords don't match.");
+
+    setPending(true);
     try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password,
-      );
-      console.log("New user:", result.user);
-    } 
-    
-    catch (error) {
-    if (error instanceof Error) {
-    console.error("Sign up error:", error.message);
-  }
-   
-  
-  else {
-    console.error("Sign up error:", error);
-  }
-}
+      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      router.push(redirectTo);
+    } catch (err) {
+      const code = (err as { code?: string })?.code ?? "";
+      setError(MESSAGES[code] ?? "Something went wrong. Please try again.");
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
-    <div className="flex flex-col items-center p-8">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-80">
-        <h2 className="text-xl font-bold">Create Account</h2>
-
-        {/* Email Input */}
+    <div className="login-form-container">
+      <h3>Sign up to Summarist</h3>
+      <form onSubmit={handleSubmit} className="login-form" noValidate>
         <input
           type="email"
-          placeholder="Email"
-          required
-          className="border p-2 rounded"
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="input-login"
+          placeholder="Email Address"
+          autoComplete="email"
+          aria-label="Email address"
         />
-
-        {/* Password Input */}
         <input
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="input-login"
           placeholder="Password"
-          required
-          className="border p-2 rounded"
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
+          autoComplete="new-password"
+          aria-label="Password"
         />
-
-        {/* Confirm Password Input */}
         <input
           type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="input-login"
           placeholder="Confirm Password"
-          required
-          className="border p-2 rounded"
-          onChange={(e) =>
-            setFormData({ ...formData, confirmPassword: e.target.value })
-          }
+          autoComplete="new-password"
+          aria-label="Confirm password"
         />
-
-        {/* Sign On Button */}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Sign On
+        {error && (
+          <p className="auth-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button type="submit" className="btn-login btn-login--primary" disabled={pending}>
+          {pending ? "Creating account…" : "Sign up"}
         </button>
       </form>
+      <div className="form__btns">
+        <button type="button" className="sign-up" onClick={onSwitchToLogin}>
+          Already have an account?
+        </button>
+      </div>
     </div>
   );
 }
-

@@ -8,7 +8,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import LoginIcon from "./components/LoginIcon";
 import GoogleIcon from "./components/GoogleIcon";
 
-export default function LoginForm({ redirectTo = "/foryou" }) {
+type LoginFormProps = {
+  redirectTo?: string;
+  /** Opens the sign-up form inside the same modal. */
+  onSwitchToSignUp?: () => void;
+};
+
+export default function LoginForm({ redirectTo = "/foryou", onSwitchToSignUp }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");    
   const router = useRouter();
@@ -99,8 +105,8 @@ export default function LoginForm({ redirectTo = "/foryou" }) {
         </button>
       </form>
       <div className="form__btns">
-        <button>Forgot your password?</button>
-        <button className="sign-up" onClick={() => alert("Sign up not implemented yet")}>
+        <button type="button">Forgot your password?</button>
+        <button type="button" className="sign-up" onClick={onSwitchToSignUp}>
           Don&apos;t have an account?
         </button>
       </div>

@@ -1123,3 +1123,33 @@ button.shop-link {
 a.nav__img--mask {
   display: block;
 }
+
+/* --- Customer login / sign-up modal -------------------------------------- */
+.auth-container {
+  /* Keep the box inside small screens; content stays centred. */
+  max-width: calc(100% - 32px);
+  max-height: calc(100vh - 32px);
+  z-index: 1001;
+}
+.auth-container .btn-close {
+  width: 40px;
+  height: 40px;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 30px;
+  line-height: 1;
+  color: #032b41;
+}
+.auth-container .btn-close:hover {
+  background: #f1f6f4;
+}
+.auth-error {
+  color: var(--shop-critical);
+  font-size: 14px;
+  margin: 0 0 12px;
+  text-align: center;
+}
