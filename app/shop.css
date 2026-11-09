@@ -1161,6 +1161,4 @@ a.nav__img--mask {
 .footer__link.footer__link--active:hover,
 .footer__link.footer__link--active:focus-visible {
   color: #032b41;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
