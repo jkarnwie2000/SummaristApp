@@ -75,7 +75,7 @@ export default function Footer() {
                       <a className="footer__link">Privacy Policies</a>
                     </div>
                     <div className="footer__link--wrapper">
-                      <Link className="footer__link" href="/admin/login">
+                      <Link className="footer__link footer__link--active" href="/admin/login">
                         Admin Login
                       </Link>
                     </div>
