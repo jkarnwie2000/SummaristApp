@@ -18,14 +18,21 @@
 
 ### 🚀 Key Features
 
-*  📚 Discover Popular Books: Explore a curated collection of trending books across multiple genres to find your next favorite read.
-*  ⚡ Concise Book Summaries: Access easy-to-read summaries that highlight key ideas, main concepts, and valuable insights in less time.
-*  🎯 Personalized Recommendations: Discover books tailored to your interests through an intuitive, user-friendly interface designed to make finding your next read effortless.
-*  ⭐ Prices & Star Ratings: Every book shows its price and a five-star rating with the number of reviews.
-*  🛒 Cart, Checkout & Stripe Payments: Add books to a cart, enter shipping details, and pay securely with the Stripe Payment Element. Prices and stock are re-checked on the server.
-*  📧 Purchase Emails: Buyers get a receipt and the business gets an order notification for every purchase.
-*  📊 Admin Dashboard: Sign in with a verified, approved admin account to track revenue, orders and copies sold, see daily revenue, manage inventory (with low-stock alerts), and delete transactions.
-
+📚 Book discovery: browse selected, recommended and suggested books
+🔍 Live search: find books by title or author
+🎧 Read or listen: text summaries and an audio player
+⭐ Ratings and prices: star ratings and a price on every book
+🛒 Shopping cart: saved cart, quantity controls, continue-shopping option
+💳 Stripe checkout: secure card payment with billing address
+📧 Purchase emails: branded receipts to buyers, alerts to the business
+🔐 Firebase sign-in: customer accounts with login and sign-up
+🛡️ Admin portal: login for approved, email-verified admins only
+📊 Sales dashboard: revenue totals, daily sales chart, transaction history
+📦 Inventory management: stock editing and low-stock alerts
+🗑️ Transaction control: delete orders and optionally restock items
+⚡ Performance: server rendering, caching, optimized images, loading skeletons
+📱 Responsive design: works on phones, tablets and desktops
+🚀 Continuous deployment: Vercel redeploys automatically on every GitHub push
 
 ## Summarist Book Summary Platform
 
