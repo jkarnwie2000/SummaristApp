@@ -48,104 +48,437 @@ A React platform that helps readers discover popular books
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) 20.9 or later, with npm
-- [Git](https://git-scm.com/downloads)
-- A [Stripe](https://dashboard.stripe.com/test/apikeys) account (test keys are fine)
-- A Gmail account with an App Password, or another SMTP provider, for purchase emails
-- *(Optional)* A Firebase project with Firestore enabled, for storing orders and inventory
+# Books E-commerce Website
+## Local Development Setup Guide
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/jkarnwie2000/SummaristApp.git
-cd SummaristApp
+### 1. Prerequisites
+
+Before setting up the project, ensure the following software is installed on your Windows computer.
+
+| Software | Requirement | Purpose |
+|---|---|---|
+| Node.js | Version 20.9 or higher | JavaScript runtime |
+| npm | Included with Node.js | Package management |
+| Visual Studio Code | Latest version recommended | Code editor |
+| Git | Latest version recommended | Version control |
+| Google Chrome | Latest version recommended | Browser testing |
+
+#### Step 1: Install Node.js
+
+1. Visit the official Node.js website: https://nodejs.org/
+2. Download and install the appropriate Node.js version.
+3. Follow the installation instructions.
+4. Ensure the option to add Node.js to your system PATH is enabled.
+
+Open the VS Code integrated terminal:
+
+**Terminal → New Terminal**
+
+Verify your installation:
+
+```powershell
+node -v
 ```
 
-### 2. Install dependencies
-```bash
+Expected output:
+
+```text
+v20.9.0
+```
+
+Check npm:
+
+```powershell
+npm -v
+```
+
+You should see an installed npm version.
+
+#### Step 2: Install Git
+
+Download Git from:
+
+https://git-scm.com/downloads
+
+Verify installation:
+
+```powershell
+git --version
+```
+
+---
+
+### 2. Clone or Open the Project
+
+If you are cloning the project from GitHub, open your VS Code terminal and execute:
+
+```powershell
+git clone YOUR_GITHUB_REPOSITORY_URL
+```
+
+Navigate into the project directory:
+
+```powershell
+cd YOUR_PROJECT_FOLDER
+```
+
+Alternatively, if you already have the project downloaded:
+
+1. Open Visual Studio Code.
+2. Select **File → Open Folder**.
+3. Navigate to the Books E-commerce Website project folder.
+4. Select the project folder and click Open.
+
+Ensure that the root directory contains:
+
+- `package.json`
+- `package-lock.json`
+- `next.config.ts`
+- `tsconfig.json`
+- `.env.example`
+
+---
+
+### 3. Install Project Dependencies
+
+The project includes a `package.json` and `package-lock.json`, which manage the application's dependencies.
+
+Since the project already contains a package-lock file, use `npm ci` to install the exact dependency versions recorded in the lockfile.
+
+Run:
+
+```powershell
+npm ci
+```
+
+This command:
+
+- Installs all required project dependencies.
+- Uses the versions specified in `package-lock.json`.
+- Ensures a consistent installation.
+- Creates the `node_modules` directory.
+- Helps prevent dependency-version inconsistencies.
+
+**Important:** Do not delete `package-lock.json` before running this command.
+
+If `npm ci` fails because the package files are out of sync, run:
+
+```powershell
 npm install
 ```
 
-### 3. Set up environment variables
-```bash
-cp .env.example .env.local
+---
+
+### 4. Configure Environment Variables
+
+The project includes a `.env.example` file.
+
+This file serves as a template for configuring environment variables required by external services.
+
+#### Step 1: Create your environment file
+
+From the project root directory, execute:
+
+```powershell
+Copy-Item .env.example .env.local
 ```
-Open `.env.local` and fill in your values:
 
-| Variable | Purpose |
-|---|---|
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (`pk_test_...`) |
-| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_...`) |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret (`whsec_...`) |
-| `ADMIN_EMAILS` | Comma-separated emails allowed into the admin dashboard |
-| `ADMIN_SESSION_SECRET` | Any long random string, used to sign admin sessions |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | SMTP settings for purchase emails |
-| `EMAIL_FROM` | Sender name and address for emails |
-| `BUSINESS_EMAILS` | Addresses that receive a notification for every order |
-| `FIREBASE_SERVICE_ACCOUNT_KEY` | *(Optional locally, required on Vercel)* Firestore service account JSON on one line |
+Next.js automatically loads environment variables from `.env.local` during development.
 
-> Never commit `.env.local`. It is already listed in `.gitignore`.
+#### Step 2: Configure your API credentials
 
-### 4. Start the development server
-```bash
+Open `.env.local` in VS Code.
+
+Based on the project structure, the application uses or references the following integrations:
+
+**Firebase**
+- Firebase authentication.
+- User login and registration.
+- Administrative authentication.
+
+**Stripe**
+- Payment processing.
+- Checkout and payment intents.
+- Stripe webhook integration.
+
+**Email Service**
+- Payment confirmation emails.
+- Order-related notifications.
+
+The exact environment variable names and required values must be taken from your actual `.env.example` file and the corresponding configuration files.
+
+To inspect the template in PowerShell:
+
+```powershell
+Get-Content .env.example
+```
+
+Check the following files for additional environment variable requirements:
+
+```text
+firebaseConfig.js
+lib/stripe.ts
+lib/email.ts
+lib/admin-auth.ts
+app/api/checkout/payment-intent/route.ts
+app/api/checkout/payment-email/route.ts
+app/api/webhooks/stripe/route.ts
+```
+
+Add the required credentials to `.env.local`.
+
+**Important security considerations:**
+
+- Never commit `.env.local` to GitHub.
+- Never expose Stripe secret keys in frontend components.
+- Never expose Firebase Admin credentials publicly.
+- Only use the `NEXT_PUBLIC_` prefix for environment variables that are intentionally exposed to the browser.
+- Use Stripe test credentials when testing payments locally.
+
+---
+
+### 5. Start the Development Server
+
+Once dependencies and environment variables are configured, start the Next.js development server.
+
+Execute:
+
+```powershell
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 5. *(Optional)* Forward Stripe webhooks locally
-```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-```
-Copy the `whsec_...` secret it prints into `STRIPE_WEBHOOK_SECRET`.
+You should see output similar to:
 
-## 🧪 Running Tests
+```text
+> next dev
 
-Tests use **Vitest** and **React Testing Library**. They don't need environment variables or network access, because Firebase and the Next.js router are faked.
+▲ Next.js
+- Local: http://localhost:3000
 
-```bash
-# Run all tests once
-npm test
-
-# Re-run tests automatically as you edit
-npm run test:watch
-
-# Run a single test file
-npx vitest run __tests__/AuthModal.test.tsx
+✓ Starting...
+✓ Ready in 2.5s
 ```
 
-**What's covered (8 files, 33 tests):**
-- 💲 **Pricing and checkout math**: prices, shipping, tax, totals
-- 🛒 **Cart logic**: add, merge, quantity limits, remove, clear, restore
-- 💳 **Stripe order data**: order lines saved on payments and read back
-- 🔐 **Auth flows**: guest login, email login, sign-up checks, error messages
-- ⭐ **UI components**: star ratings, book cards, footer admin link
+Open your browser and navigate to:
 
-Test files are in the `__tests__/` folder, and the setup is in `vitest.config.mts`.
+**http://localhost:3000**
 
-## 💳 Test a Purchase
-Use Stripe's test card **4242 4242 4242 4242** with any future expiry date, any CVC and any ZIP code.
+Your Books E-commerce Website should now be running locally.
 
-## 🛡️ Access the Admin Dashboard
-1. Go to `/admin/signup` and create an account with an email listed in `ADMIN_EMAILS`.
-2. Verify the email address.
-3. Sign in at `/admin/login`.
+The development server supports hot reloading, meaning changes made to your React components, CSS files, and other application files will automatically appear in the browser.
 
-## 📦 Production Build
-```bash
-npm run lint    # check code quality
-npm test        # run the test suite
-npm run build   # build for production
-npm start       # serve the production build
+To stop the development server, press:
+
+```text
+CTRL + C
 ```
-Open [http://localhost:3000](http://localhost:3000) to view the production build.
 
-## ☁️ Deploy
-Import the repository into [Vercel](https://vercel.com/), add the same environment variables in the project settings, and deploy. Every push to the production branch redeploys the site automatically.
+---
 
-## 🛠️ Troubleshooting
-- **Port 3000 is in use:** run `npm run dev -- --port 3001` and open `http://localhost:3001`.
-- **Payments fail:** check that both Stripe keys are test keys from the same Stripe account.
-- **Purchase emails don't arrive:** for Gmail, use an App Password, not your normal password, and check the spam folder.
-- **Admin login is refused:** make sure the email is listed in `ADMIN_EMAILS` and has been verified.
-- **Changes to `.env.local` don't apply:** stop the dev server and run `npm run dev` again.
+### 6. Run the Application in Production Mode
 
+To verify that the application can successfully build for production, execute:
+
+```powershell
+npm run build
+```
+
+This generates an optimized production build.
+
+After a successful build, start the production server:
+
+```powershell
+npm run start
+```
+
+Open:
+
+http://localhost:3000
+
+To stop the production server:
+
+```text
+CTRL + C
+```
+
+---
+
+### 7. Run the Automated Tests
+
+The project includes a test suite under the `__tests__` directory and a `vitest.config.mts` configuration file.
+
+This indicates that the project uses Vitest for automated testing.
+
+Run the tests using:
+
+```powershell
+npx vitest run
+```
+
+To run tests in watch mode:
+
+```powershell
+npx vitest
+```
+
+The tests cover several application components and functionalities, including:
+
+- Authentication error handling.
+- Authentication modal.
+- Book cards.
+- Shopping cart functionality.
+- Book catalog.
+- Footer component.
+- Star ratings.
+- Stripe checkout items.
+
+---
+
+### 8. Run ESLint
+
+The project includes an ESLint configuration file:
+
+```text
+eslint.config.mjs
+```
+
+To run ESLint, execute:
+
+```powershell
+npx eslint .
+```
+
+This checks the project for potential JavaScript and TypeScript errors, coding issues, and linting violations.
+
+---
+
+### 9. Launch and Debug Using VS Code
+
+The supplied project structure does not currently show a `.vscode` directory or `launch.json` file.
+
+However, you can create your own VS Code debugging configuration.
+
+#### Step 1: Create the VS Code configuration folder
+
+In your project's root directory, create:
+
+```text
+.vscode
+```
+
+Inside that folder, create:
+
+```text
+launch.json
+```
+
+Your project structure should now include:
+
+```text
+.vscode/
+    launch.json
+```
+
+#### Step 2: Add the debugging configuration
+
+Paste the following configuration into `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: Debug Development Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "pattern": "Local:\\s+(https?://localhost:\\d+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+This configuration launches the Next.js development server and automatically opens Chrome with debugging enabled once the server is ready.
+
+#### Step 3: Start debugging
+
+1. Open the project in VS Code.
+2. Click the **Run and Debug** icon on the left sidebar.
+3. Select `Next.js: Debug Development Server`.
+4. Click the green Start Debugging button.
+5. Wait for Next.js to start.
+6. Chrome should automatically open your application.
+
+You can now:
+
+- Set breakpoints in your application.
+- Inspect variables.
+- Step through JavaScript execution.
+- Debug frontend functionality.
+- Investigate runtime errors.
+
+**Note:** If VS Code does not recognize `debugWithChrome`, install the Microsoft JavaScript Debugger extension or use the built-in JavaScript Debugger available in current VS Code versions.
+
+---
+
+### 10. Troubleshooting Common Issues
+
+| Problem | Recommended Solution |
+|---|---|
+| `npm is not recognized` | Reinstall Node.js and ensure it is added to PATH. |
+| `Module not found` | Run `npm ci` again. |
+| Port 3000 already in use | Stop the other process or run `npm run dev -- --port 3001`. |
+| Firebase authentication errors | Verify Firebase credentials in `.env.local` and the Firebase configuration. |
+| Stripe payment errors | Verify Stripe test keys and webhook configuration. |
+| Environment variables undefined | Check variable names and restart the development server. |
+| TypeScript compilation errors | Inspect the reported file and line number. |
+| Images not displaying | Verify image paths and filenames in the `public` directory. |
+| Tests failing | Run `npx vitest run` and inspect the error output. |
+
+---
+
+### 11. Quick Reference: Essential Commands
+
+Use the following commands whenever you need to work on the project.
+
+| Task | Command |
+|---|---|
+| Install dependencies | `npm ci` |
+| Start development server | `npm run dev` |
+| Build production application | `npm run build` |
+| Start production server | `npm run start` |
+| Run automated tests | `npx vitest run` |
+| Run tests in watch mode | `npx vitest` |
+| Run ESLint | `npx eslint .` |
+| Check Node.js version | `node -v` |
+| Check npm version | `npm -v` |
+
+### 12. Final Verification Checklist
+
+Before considering your local development environment ready, verify the following:
+
+- [ ] Node.js 20.9 or higher is installed.
+- [ ] Git is installed.
+- [ ] The project is opened in VS Code.
+- [ ] All dependencies have been installed successfully.
+- [ ] `.env.local` has been created from `.env.example`.
+- [ ] Firebase credentials are configured.
+- [ ] Stripe test credentials are configured.
+- [ ] Email service credentials are configured, if required.
+- [ ] The Next.js development server starts successfully.
+- [ ] The application loads at `http://localhost:3000`.
+- [ ] Automated tests execute successfully.
+- [ ] ESLint executes successfully.
+- [ ] VS Code debugging configuration is working.
+
+**The project is now ready for local development and testing.**
