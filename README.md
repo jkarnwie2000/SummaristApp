@@ -14,8 +14,11 @@
 * Firebase Admin SDK: server-side token verification
 * Nodemailer: automated purchase email notifications
 * CSS: custom responsive styling
+* Vitest: fast unit and component testing
+* React Testing Library: user-focused component behavior tests
+* jsdom: simulated browser for running tests
+* ESLint: code quality and consistency checks
 * Vercel: hosting with automatic GitHub deploys
-
 ### 🚀 Key Features
 
 * 📚 Book discovery: browse selected, recommended and suggested books
