@@ -46,6 +46,7 @@ A React platform that helps readers discover popular books
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) 20.9 or later, with npm
+- [Git](https://git-scm.com/downloads)
 - A [Stripe](https://dashboard.stripe.com/test/apikeys) account (test keys are fine)
 - A Gmail account with an App Password, or another SMTP provider, for purchase emails
 - *(Optional)* A Firebase project with Firestore enabled, for storing orders and inventory
@@ -93,20 +94,54 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 Copy the `whsec_...` secret it prints into `STRIPE_WEBHOOK_SECRET`.
 
-### 🧪 Test a purchase
+## 🧪 Running Tests
+
+Tests use **Vitest** and **React Testing Library**. They don't need environment variables or network access, because Firebase and the Next.js router are faked.
+
+```bash
+# Run all tests once
+npm test
+
+# Re-run tests automatically as you edit
+npm run test:watch
+
+# Run a single test file
+npx vitest run __tests__/AuthModal.test.tsx
+```
+
+**What's covered (8 files, 33 tests):**
+- 💲 **Pricing and checkout math**: prices, shipping, tax, totals
+- 🛒 **Cart logic**: add, merge, quantity limits, remove, clear, restore
+- 💳 **Stripe order data**: order lines saved on payments and read back
+- 🔐 **Auth flows**: guest login, email login, sign-up checks, error messages
+- ⭐ **UI components**: star ratings, book cards, footer admin link
+
+Test files are in the `__tests__/` folder, and the setup is in `vitest.config.mts`.
+
+## 💳 Test a Purchase
 Use Stripe's test card **4242 4242 4242 4242** with any future expiry date, any CVC and any ZIP code.
 
-### 🛡️ Access the admin dashboard
+## 🛡️ Access the Admin Dashboard
 1. Go to `/admin/signup` and create an account with an email listed in `ADMIN_EMAILS`.
 2. Verify the email address.
 3. Sign in at `/admin/login`.
 
-### 📦 Production build
+## 📦 Production Build
 ```bash
-npm run build
-npm start
+npm run lint    # check code quality
+npm test        # run the test suite
+npm run build   # build for production
+npm start       # serve the production build
 ```
+Open [http://localhost:3000](http://localhost:3000) to view the production build.
 
-### ☁️ Deploy
+## ☁️ Deploy
 Import the repository into [Vercel](https://vercel.com/), add the same environment variables in the project settings, and deploy. Every push to the production branch redeploys the site automatically.
+
+## 🛠️ Troubleshooting
+- **Port 3000 is in use:** run `npm run dev -- --port 3001` and open `http://localhost:3001`.
+- **Payments fail:** check that both Stripe keys are test keys from the same Stripe account.
+- **Purchase emails don't arrive:** for Gmail, use an App Password, not your normal password, and check the spam folder.
+- **Admin login is refused:** make sure the email is listed in `ADMIN_EMAILS` and has been verified.
+- **Changes to `.env.local` don't apply:** stop the dev server and run `npm run dev` again.
 
