@@ -40,7 +40,7 @@
 
 A React platform that helps readers discover popular books
 
-## Summarist Book Summary
+## Summarist Book Summary Run Instructions
 
 ## 🚀 Getting Started
 
