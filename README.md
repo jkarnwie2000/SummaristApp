@@ -36,6 +36,7 @@
 * ⚡ Performance: server rendering, caching, optimized images, loading skeletons
 * 📱 Responsive design: works on phones, tablets and desktops
 * 🚀 Continuous deployment: Vercel redeploys automatically on every GitHub push
+* 🧪 Automated testing: 33 Vitest and React Testing Library tests
 
 ## Summarist Book Summary Platform
 
