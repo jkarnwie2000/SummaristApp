@@ -49,7 +49,6 @@ A React platform that helps readers discover popular books
 
 ## 🚀 Getting Started
 
-# Books E-commerce Website
 ## Local Development Setup Guide
 
 ### 1. Prerequisites
