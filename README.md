@@ -19,6 +19,7 @@
 * jsdom: simulated browser for running tests
 * ESLint: code quality and consistency checks
 * Vercel: hosting with automatic GitHub deploys
+
 ### 🚀 Key Features
 
 * 📚 Book discovery: browse selected, recommended and suggested books
