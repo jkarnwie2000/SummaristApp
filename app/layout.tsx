@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "./shop.css";
 import Providers from "./Providers";
 
-// Self-hosted by next/font: no render-blocking request to Google Fonts.
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+// Roboto is bundled in app/fonts (SIL OFL 1.1, see OFL.txt), so builds never
+// download fonts from Google — that download made Vercel builds fail randomly.
+const roboto = localFont({
+  src: [
+    { path: "./fonts/roboto-300.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/roboto-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/roboto-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/roboto-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-roboto",
   display: "swap",
 });
